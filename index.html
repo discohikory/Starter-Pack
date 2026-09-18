@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Starter Pack: arma tu kit inicial, genera tu firma y aprende tu primera granja. Todo para empezar en Minecraft.">
+<title>Starter Pack — Discohikorybrs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060d;--panel:rgba(15,20,35,.55);--line:rgba(139,92,246,.2);--text:#f5f7ff;--muted:#9da8c5;--a:#8b5cf6}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;line-height:1.6}
+.bg-grid{position:fixed;inset:0;z-index:-2;opacity:.14;background-image:linear-gradient(#293354 1px,transparent 1px),linear-gradient(90deg,#293354 1px,transparent 1px);background-size:44px 44px}
+header{max-width:1120px;margin:auto;padding:20px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;background:rgba(4,6,13,.8);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.brand{font:700 16px 'Space Grotesk';color:#fff;text-decoration:none}
+.back{color:#b39aff;text-decoration:none;font-size:13px;border:1px solid var(--line);padding:8px 14px;border-radius:8px}
+main{max-width:1120px;margin:auto;padding:24px}
+.hero-t{text-align:center;padding:28px 0 8px}
+.hero-t h1{font:700 clamp(28px,4.5vw,46px) 'Space Grotesk';margin:10px 0;background:linear-gradient(90deg,#fff 25%,#86efac);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(74,222,128,.3))}
+.eyebrow{color:#86efac;font-size:10px;font-family:'Press Start 2P',monospace;letter-spacing:2px}
+.lead{color:var(--muted);max-width:680px;margin:0 auto}
+.glass{background:var(--panel);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.card{padding:22px;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+h2.st{font:700 22px 'Space Grotesk';margin:0 0 6px}
+.muted{color:var(--muted);font-size:13px}
+input,select{font-family:inherit;color:#fff;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px;outline:none;font-size:14px;width:100%}
+label{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);margin-bottom:10px}
+.rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{padding:11px 20px;border:1px solid var(--line);border-radius:10px;font-size:13px;font-weight:700;color:#fff;background:rgba(255,255,255,.04);cursor:pointer}
+.btn:hover{border-color:#4ade80}
+.primary{background:linear-gradient(#4ade80,#15803d);border:2px solid #141414;border-radius:4px;color:#04120a}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chip{padding:8px 14px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer}
+.chip.active{color:#fff;border-color:#4ade80}
+.inv{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:12px 0}
+.slot{border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(0,0,0,.35);padding:8px 6px;text-align:center;cursor:pointer;font-size:11px}
+.slot small{display:block;color:var(--muted);font-size:10px}
+.slot .qty{font-family:monospace;color:#fcd34d;font-weight:700}
+.slot.on{border-color:#4ade80;background:rgba(74,222,128,.08)}
+pre.tpl{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;font-size:12px;font-family:monospace;max-height:240px;overflow-y:auto}
+#sigCanvas{width:100%;max-width:600px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
+.farm{border:1px solid var(--line);border-radius:12px;padding:16px;margin:10px 0}
+.farm h3{margin:0 0 4px}
+.farm label.ck{display:flex;flex-direction:row;align-items:center;gap:10px;font-size:13px;color:var(--text);margin:6px 0;cursor:pointer}
+.farm input[type=checkbox]{width:18px;height:18px;accent-color:#4ade80}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid #4ade80;color:#86efac;margin-right:6px}
+footer{text-align:center;padding:34px 20px;color:var(--muted);font-size:12px;border-top:1px solid rgba(255,255,255,.06);margin-top:30px}
+footer strong{color:#fff}
+.visits{margin-top:10px;font-size:13px;color:var(--muted)}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<header>
+  <a class="back" href="https://discohikory.github.io/Portafolio/">← Portafolio</a>
+  <a class="brand" href="#">🎒 Starter Pack</a>
+</header>
+<main>
+  <div class="hero-t">
+    <p class="eyebrow">BIENVENIDO · EMPIEZA BIEN</p>
+    <h1>Starter Pack</h1>
+    <p class="lead">Tu kit inicial, tu firma de novato y tu primera granja. Todo lo que un recién llegado necesita.</p>
+  </div>
+  <div class="card glass">
+    <h2 class="st">🎒 1 · Arma tu kit inicial</h2>
+    <div class="chips" id="kitPre"></div>
+    <div class="inv" id="inv"></div>
+    <pre class="tpl" id="kitOut">Toca items para agregarlos…</pre>
+    <div class="rowbtns"><button type="button" class="btn primary" id="kitCopy">Copiar comandos 📋</button><button type="button" class="btn" id="kitClear">Vaciar</button></div>
+  </div>
+  <div class="grid2">
+    <div class="card glass">
+      <h2 class="st">✍️ 2 · Tu firma de novato</h2>
+      <label>Nick<input id="sNick" maxlength="16" placeholder="Tu nick"></label>
+      <label>Rango<input id="sRank" maxlength="24" placeholder="Miembro"></label>
+      <label>Servidor<input id="sSrv" maxlength="30" placeholder="Mi servidor favorito"></label>
+      <label>Frase<input id="sTxt" maxlength="60" placeholder="Empezando la aventura"></label>
+      <label>Color<select id="sCol"><option value="#4ade80">Verde</option><option value="#8b5cf6">Morado</option><option value="#22d3ee">Cian</option><option value="#fbbf24">Dorado</option></select></label>
+      <canvas id="sigCanvas" width="600" height="160"></canvas>
+      <div class="rowbtns"><button type="button" class="btn primary" id="sigDl">Descargar PNG ⬇️</button><button type="button" class="btn" id="sigTxt">Copiar texto</button></div>
+    </div>
+    <div class="card glass">
+      <h2 class="st">🌾 3 · Tu primera granja</h2>
+      <p class="muted">Elige según tu etapa. Marca los pasos al completarlos.</p>
+      <div class="chips" id="farmTabs"></div>
+      <div id="farmBox"></div>
+    </div>
+  </div>
+</main>
+<section style="max-width:1120px;margin:6px auto 0;padding:0 24px">
+  <div class="card glass">
+    <h2 class="st">🚀 Mis proyectos</h2>
+    <div class="grid2" id="projLinks"></div>
+  </div>
+</section>
+<footer>© 2026 Daniel Esteban Vera Fernandez · <strong>Discohikorybrs</strong> · Todos los derechos reservados.<br><small>Bienvenido al servidor. Hecho con ⛏️</small><div class="visits">👁 <span id="visitCount">…</span> visitas</div></footer>
+<script>
+const PROJS=[["Portfolio principal","https://discohikory.github.io/Portafolio/"],["Staff Toolkit","https://discohikory.github.io/Staff-Toolkit/"],["Wiki de Comandos","https://discohikory.github.io/Wiki-Comandos/"],["Quiz Staff","https://discohikory.github.io/Quiz-Staff/"],["Status en vivo","https://discohikory.github.io/Server-Status/"],["Guía de Encantamientos","https://discohikory.github.io/Guia-Encantamientos/"],["Crónicas del Staff","https://discohikory.github.io/Cronicas/"],["Centro de comunidad","https://discohikory.github.io/Comunidad/"],["PlayerCards","https://discohikory.github.io/PlayerCards/"],["Radio Gamer","https://discohikory.github.io/Radio-Gamer/"]];
+document.getElementById('projLinks').innerHTML=PROJS.map(p=>`<div><h3 style="margin:6px 0">${p[0]}</h3><div class="rowbtns"><a class="btn" href="${p[1]}">Abrir ↗</a></div></div>`).join('');
+const store={get:(k,f)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=v=>{const d=document.createElement('div');d.textContent=v==null?"":v;return d.innerHTML};
+// ---------- 1. KITS ----------
+const ITEMS=[
+ {id:"iron_sword",n:"Espada hierro"},{id:"shield",n:"Escudo"},{id:"bow",n:"Arco"},{id:"arrow",n:"Flechas",q:64},
+ {id:"iron_helmet",n:"Casco"},{id:"iron_chestplate",n:"Pechera"},{id:"iron_leggings",n:"Pantalones"},{id:"iron_boots",n:"Botas"},
+ {id:"iron_pickaxe",n:"Pico"},{id:"iron_axe",n:"Hacha"},{id:"torch",n:"Antorchas",q:64},{id:"cooked_beef",n:"Comida",q:32},
+ {id:"oak_planks",n:"Madera",q:64},{id:"cobblestone",n:"Piedra",q:64},{id:"water_bucket",n:"Agua"},{id:"bed",n:"Cama",c:"red_bed"},
+ {id:"ender_pearl",n:"Perlas",q:16},{id:"golden_apple",n:"Manzana dorada"},{id:"fishing_rod",n:"Caña"},{id:"shears",n:"Tijeras"}
+];
+const PRESETS={"Guerrero":["iron_sword","shield","iron_chestplate","cooked_beef","torch"],"Minero":["iron_pickaxe","torch","oak_planks","cooked_beef","water_bucket"],"Arquero":["bow","arrow","cooked_beef","bed"],"Nómada":["bed","cooked_beef","torch","oak_planks","fishing_rod"]};
+let kit={};
+function paintInv(){
+  document.getElementById('inv').innerHTML=ITEMS.map((it,i)=>`<div class="slot${kit[i]?' on':''}" data-it="${i}"><b>${esc(it.n)}</b><small>minecraft:${esc(it.c||it.id)}</small><span class="qty">${kit[i]?("x"+kit[i]):"+"}</span></div>`).join('');
+  const lines=Object.keys(kit).map(i=>{const it=ITEMS[i];return `/give @p minecraft:${it.c||it.id} ${kit[i]}`});
+  document.getElementById('kitOut').textContent=lines.length?lines.join("\n"):"Toca items para agregarlos…";
+}
+document.getElementById('inv').addEventListener('click',e=>{
+  const t=e.target.closest?e.target.closest('[data-it]'):null;
+  if(!t)return;
+  const i=t.dataset.it,max=ITEMS[i].q||1;
+  kit[i]=kit[i]?((kit[i]%max)+1):1;
+  if(kit[i]===1&&max===1&&t.classList.contains('on'))delete kit[i];
+  paintInv();
+});
+document.getElementById('kitPre').innerHTML=Object.keys(PRESETS).map(p=>`<button class="chip" data-pre="${p}">${p}</button>`).join('');
+document.getElementById('inv').addEventListener('contextmenu',e=>{
+  const t=e.target.closest?e.target.closest('[data-it]'):null;
+  if(!t)return;e.preventDefault();delete kit[t.dataset.it];paintInv();
+});
+document.querySelectorAll('[data-pre]').forEach(b=>b.addEventListener('click',()=>{
+  kit={};
+  PRESETS[b.dataset.pre].forEach(id=>{
+    const i=ITEMS.findIndex(x=>x.id===id||x.c===id);
+    if(i>=0)kit[i]=ITEMS[i].q||1;
+  });
+  paintInv();
+}));
+document.getElementById('kitClear').addEventListener('click',()=>{kit={};paintInv()});
+document.getElementById('kitCopy').addEventListener('click',async()=>{
+  const t=document.getElementById('kitOut').textContent;
+  try{await navigator.clipboard.writeText(t);alert('¡Kit copiado! 📋')}catch(e){alert('No se pudo copiar.')}
+});
+paintInv();
+// ---------- 2. FIRMA ----------
+function paintSig(){
+  const c=document.getElementById('sigCanvas'),x=c.getContext('2d');
+  const col=document.getElementById('sCol').value;
+  const nick=document.getElementById('sNick').value||"TuNick";
+  x.fillStyle="#0b0b1c";x.fillRect(0,0,600,160);
+  x.strokeStyle=col;x.lineWidth=4;x.strokeRect(4,4,592,152);
+  x.fillStyle=col;x.font="bold 44px monospace";x.textAlign="center";
+  x.fillText(nick.slice(0,12).toUpperCase(),300,62);
+  x.fillStyle="#9da8c5";x.font="20px monospace";
+  x.fillText((document.getElementById('sRank').value||"Miembro")+" · "+(document.getElementById('sSrv').value||"Mi servidor"),300,96);
+  x.fillStyle="#e5e7eb";x.font="italic 18px monospace";
+  x.fillText("«"+(document.getElementById('sTxt').value||"Empezando la aventura").slice(0,40)+"»",300,128);
+}
+["sNick","sRank","sSrv","sTxt","sCol"].forEach(id=>document.getElementById(id).addEventListener('input',paintSig));
+paintSig();
+document.getElementById('sigDl').addEventListener('click',()=>{
+  const a=document.createElement('a');a.download="firma.png";a.href=document.getElementById('sigCanvas').toDataURL("image/png");a.click();
+});
+document.getElementById('sigTxt').addEventListener('click',async()=>{
+  const t=`[${document.getElementById('sRank').value||"Miembro"}] ${document.getElementById('sNick').value||"TuNick"} | ${document.getElementById('sSrv').value||"Mi servidor"} — "${document.getElementById('sTxt').value||"Empezando la aventura"}"`;
+  try{await navigator.clipboard.writeText(t);alert('¡Copiado! 📋')}catch(e){alert('No se pudo copiar.')}
+});
+// ---------- 3. GRANJAS ----------
+const FARMS=[
+ {n:"Trigo y pan",etapa:"Día 1",dif:"Fácil",mats:"Azada, semillas, agua y tierra",steps:["Aplana tierra cerca del agua","Ara con la azada","Planta semillas","Espera y cosecha con clic","Hornea el trigo en pan"]},
+ {n:"Hierro (aldeanos)",etapa:"Semana 1",dif:"Media",mats:"3 aldeanos, 1 zombi, camas, tolvas y cofres",steps:["Encierra 3 aldeanos con camas","Pon un zombi que los asuste sin alcanzarlos","Coloca tolvas + cofre debajo","Quédate AFK a 100 bloques","Recoge lingotes"]},
+ {n:"Oro y XP (Nether)",etapa:"Con diamante",dif:"Media",mats:"Obsidiana, tolvas, espada con Saqueo",steps:["Abre portal en zona abierta del Nether","Canaliza piglins a la caída","Recoge oro y XP abajo","Repara equipo con la XP"]},
+ {n:"Enderman",etapa:"Endgame",dif:"Difícil",mats:"Muchos bloques, enderpearls, espada Saqueo III",steps:["Ve a una isla vacía del End (la del dragón no)","Plataforma a 130 bloques del vacío","Hoja de agua + endermite al centro","Mata con Saqueo y sube 30 niveles/min"]}
+];
+let farmIdx=0;
+function paintFarms(){
+  document.getElementById('farmTabs').innerHTML=FARMS.map((f,i)=>`<button class="chip${i===farmIdx?" active":""}" data-farm="${i}">${f.n}</button>`).join('');
+  document.querySelectorAll('[data-farm]').forEach(b=>b.addEventListener('click',()=>{farmIdx=Number(b.dataset.farm);paintFarms()}));
+  const f=FARMS[farmIdx],done=store.get('sp_farm_'+farmIdx,[]);
+  document.getElementById('farmBox').innerHTML=`<div class="farm"><h3>${f.n}</h3><p class="muted">Etapa: ${f.etapa} · Dificultad: ${f.dif}</p><p class="muted"><b>Materiales:</b> ${f.mats}</p>${f.steps.map((s,i)=>`<label class="ck"><input type="checkbox" data-st="${i}" ${done.includes(i)?"checked":""}> ${s}</label>`).join('')}<p class="muted">${done.length}/${f.steps.length} pasos ✅</p></div>`;
+  document.querySelectorAll('[data-st]').forEach(c=>c.addEventListener('change',()=>{
+    let d=store.get('sp_farm_'+farmIdx,[]);
+    const i=Number(c.dataset.st);
+    d=c.checked?[...new Set([...d,i])]:d.filter(x=>x!==i);
+    store.set('sp_farm_'+farmIdx,d);paintFarms();
+  }));
+}
+paintFarms();
+(function(){
+  var el=document.getElementById('visitCount');
+  if(!el)return;
+  function fmt(n){n=Number(n)||0;return n>=1000?(n/1000).toFixed(1).replace('.',',').replace(',0','')+' mil':String(n)}
+  fetch('https://api.jsonbin.io/v3/b/6aac6a86ffd5d1605313c161/latest',{headers:{'X-Access-Key':'$2a$10$XbVd43wzBhlIfE1632782ePKNz5e/MaX25U3NJ5JRIBKtJt0ILnXC'}})
+  .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+    var v=(j.record&&j.record.visits)||{};
+    v.starter=(v.starter||0)+1;
+    el.textContent=fmt(v.starter);
+    fetch('https://api.jsonbin.io/v3/b/6aac6a86ffd5d1605313c161',{method:'PUT',headers:{'Content-Type':'application/json','X-Access-Key':'$2a$10$XbVd43wzBhlIfE1632782ePKNz5e/MaX25U3NJ5JRIBKtJt0ILnXC','X-Bin-Versioning':'false'},body:JSON.stringify({visits:v})}).catch(function(){});
+  }).catch(function(){el.textContent='—'});
+})();
+</script>
+</body>
+</html>
