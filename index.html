@@ -88,13 +88,20 @@ footer strong{color:#fff}
       <label>Frase<input id="sTxt" maxlength="60" placeholder="Empezando la aventura"></label>
       <label>Color<select id="sCol"><option value="#4ade80">Verde</option><option value="#8b5cf6">Morado</option><option value="#22d3ee">Cian</option><option value="#fbbf24">Dorado</option></select></label>
       <canvas id="sigCanvas" width="600" height="160"></canvas>
-      <div class="rowbtns"><button type="button" class="btn primary" id="sigDl">Descargar PNG ⬇️</button><button type="button" class="btn" id="sigTxt">Copiar texto</button></div>
+      <div class="rowbtns"><button type="button" class="btn primary" id="sigDl">Descargar PNG ⬇️</button><button type="button" class="btn" id="sigTxt">Copiar texto</button><button type="button" class="btn" id="sigCmd">📦 Comandos rename</button></div>
+      <div id="sigCmdOut" style="margin-top:12px"></div>
     </div>
     <div class="card glass">
       <h2 class="st">🌾 3 · Tu primera granja</h2>
       <p class="muted">Elige según tu etapa. Marca los pasos al completarlos.</p>
       <div class="chips" id="farmTabs"></div>
       <div id="farmBox"></div>
+      <div style="margin-top:14px">
+        <label>🤖 Asesor de granjas IA<input id="aiFarmIn" maxlength="140" placeholder="Ej. mi granja de hierro no produce, ¿por qué?"></label>
+        <div class="rowbtns"><button type="button" class="btn primary" id="aiFarmGo">Preguntar a la IA ✨</button><button type="button" class="btn" id="aiFarmTip">💡 Mejorar esta granja</button></div>
+        <small id="aiFarmNote" class="muted"></small>
+        <pre class="tpl" id="aiFarmOut" style="display:none"></pre>
+      </div>
     </div>
   </div>
 </main>
@@ -230,6 +237,28 @@ function paintSig(){
 }
 ["sNick","sRank","sSrv","sTxt","sCol"].forEach(id=>document.getElementById(id).addEventListener('input',paintSig));
 paintSig();
+function escNbt(s){return String(s||"").replace(/\\/g,"\\\\").replace(/"/g,'\\"').slice(0,60)}
+function hexToAmp(hex){hex=String(hex).toLowerCase();if(hex==="#4ade80")return"&a";if(hex==="#8b5cf6")return"&d";if(hex==="#22d3ee")return"&b";if(hex==="#fbbf24")return"&6";return"&f"}
+document.getElementById('sigCmd').addEventListener('click',()=>{
+  const nick=document.getElementById('sNick').value||"TuNick";
+  const line1=(document.getElementById('sRank').value||"Miembro")+" · "+(document.getElementById('sSrv').value||"Mi servidor");
+  const line2=(document.getElementById('sTxt').value||"Empezando la aventura").slice(0,50);
+  const amp=hexToAmp(document.getElementById('sCol').value);
+  const J=t=>`{"text":"${escNbt(t)}"}`;
+  const v1=`/give @p minecraft:paper{display:{Name:'${J(amp+nick)}',Lore:['${J(line1)}','${J(line2)}']}} 1`;
+  const v2=`/give @p minecraft:paper[minecraft:custom_name='${J(amp+nick)}',minecraft:lore=['${J(line1)}','${J(line2)}']] 1`;
+  const es=`/itemname ${amp}${nick}\n/itemlore add ${line1}\n/itemlore add ${line2}`;
+  const box=document.getElementById('sigCmdOut');
+  box.innerHTML=`<p class="muted">Pega en el juego según tu versión/plugin. Si usas <b>ItemEditor</b> u otro plugin de items, copia el <b>nombre</b> y el <b>lore</b> en su editor visual.</p>
+  <p class="muted"><b>Minecraft ≤1.20.4 (NBT):</b></p><pre class="tpl" id="cmdV1"></pre><div class="rowbtns"><button type="button" class="btn" id="cpV1">Copiar 📋</button></div>
+  <p class="muted"><b>Minecraft 1.20.5+ (componentes):</b></p><pre class="tpl" id="cmdV2"></pre><div class="rowbtns"><button type="button" class="btn" id="cpV2">Copiar 📋</button></div>
+  <p class="muted"><b>EssentialsX (ten el papel en la mano):</b></p><pre class="tpl" id="cmdEs"></pre><div class="rowbtns"><button type="button" class="btn" id="cpEs">Copiar 📋</button></div>`;
+  box.querySelector('#cmdV1').textContent=v1;
+  box.querySelector('#cmdV2').textContent=v2;
+  box.querySelector('#cmdEs').textContent=es;
+  const cp=(id,txt)=>document.getElementById(id).addEventListener('click',async()=>{try{await navigator.clipboard.writeText(txt);alert('¡Copiado! 📋')}catch(e){alert('No se pudo copiar.')}});
+  cp('cpV1',v1);cp('cpV2',v2);cp('cpEs',es);
+});
 document.getElementById('sigDl').addEventListener('click',()=>{
   const a=document.createElement('a');a.download="firma.png";a.href=document.getElementById('sigCanvas').toDataURL("image/png");a.click();
 });
@@ -258,6 +287,23 @@ function paintFarms(){
   }));
 }
 paintFarms();
+document.getElementById('aiFarmGo').addEventListener('click',()=>{
+  const q=document.getElementById('aiFarmIn').value.trim();
+  const note=document.getElementById('aiFarmNote'),out=document.getElementById('aiFarmOut');
+  if(q.length<4){note.textContent="Describe tu duda en unas palabras. ✍️";return}
+  note.textContent="";out.style.display='block';out.textContent="Generando… ⏳";
+  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Responde en máximo 120 palabras con pasos o causas concretas: ${q}`).then(r=>{
+    out.textContent=r.text;note.textContent=`Vía ${r.via}. ✅ Verifica en creativo antes de romper nada.`;
+  }).catch(()=>{out.style.display='none';note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
+});
+document.getElementById('aiFarmTip').addEventListener('click',()=>{
+  const f=FARMS[farmIdx];
+  const note=document.getElementById('aiFarmNote'),out=document.getElementById('aiFarmOut');
+  note.textContent="";out.style.display='block';out.textContent="Generando… ⏳";
+  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Granja: ${f.n} (etapa ${f.etapa}, dificultad ${f.dif}). Materiales: ${f.mats}. Pasos: ${f.steps.join(" / ")}. Da 3 mejoras concretas (eficiencia, errores comunes y truco) en máximo 110 palabras.`).then(r=>{
+    out.textContent=r.text;note.textContent=`Vía ${r.via}. ✅`;
+  }).catch(()=>{out.style.display='none';note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
+});
 (function(){
   var el=document.getElementById('visitCount');
   if(!el)return;
