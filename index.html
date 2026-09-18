@@ -292,7 +292,7 @@ document.getElementById('aiFarmGo').addEventListener('click',()=>{
   const note=document.getElementById('aiFarmNote'),out=document.getElementById('aiFarmOut');
   if(q.length<4){note.textContent="Describe tu duda en unas palabras. ✍️";return}
   note.textContent="";out.style.display='block';out.textContent="Generando… ⏳";
-  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Responde en máximo 120 palabras con pasos o causas concretas: ${q}`).then(r=>{
+  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Pregunta: ${q}. REGLAS: responde con pasos numerados empezando en el 1), cortos y en orden, máximo 130 palabras. Si algo no aplica a esa granja, dilo en vez de inventar otra distinta.`).then(r=>{
     out.textContent=r.text;note.textContent=`Vía ${r.via}. ✅ Verifica en creativo antes de romper nada.`;
   }).catch(()=>{out.style.display='none';note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
 });
@@ -300,7 +300,7 @@ document.getElementById('aiFarmTip').addEventListener('click',()=>{
   const f=FARMS[farmIdx];
   const note=document.getElementById('aiFarmNote'),out=document.getElementById('aiFarmOut');
   note.textContent="";out.style.display='block';out.textContent="Generando… ⏳";
-  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Granja: ${f.n} (etapa ${f.etapa}, dificultad ${f.dif}). Materiales: ${f.mats}. Pasos: ${f.steps.join(" / ")}. Da 3 mejoras concretas (eficiencia, errores comunes y truco) en máximo 110 palabras.`).then(r=>{
+  aiChat(`Eres experto en granjas de Minecraft Java (español neutro). Esta es la guía EXACTA de la granja ${f.n}, no inventes otra distinta. Materiales: ${f.mats}. Pasos: ${f.steps.join(" / ")}. Da 3 mejoras concretas sobre ESTA guía (eficiencia, errores comunes y truco), numeradas 1) 2) 3), máximo 110 palabras.`).then(r=>{
     out.textContent=r.text;note.textContent=`Vía ${r.via}. ✅`;
   }).catch(()=>{out.style.display='none';note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
 });
