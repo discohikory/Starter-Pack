@@ -7,6 +7,7 @@
 <title>Starter Pack — Discohikorybrs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root{--bg:#04060d;--panel:rgba(15,20,35,.55);--line:rgba(139,92,246,.2);--text:#f5f7ff;--muted:#9da8c5;--a:#8b5cf6}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
@@ -33,6 +34,7 @@ label{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--mute
 .primary{background:linear-gradient(#4ade80,#15803d);border:2px solid #141414;border-radius:4px;color:#04120a}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .chip{padding:8px 14px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer}
+.chip.active{color:#fff;border-color:#4ade80}
 .chip.active{color:#fff;border-color:#4ade80}
 .inv{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:12px 0}
 .slot{border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(0,0,0,.35);padding:8px 6px;text-align:center;cursor:pointer;font-size:11px}
@@ -67,7 +69,13 @@ footer strong{color:#fff}
   <div class="card glass">
     <h2 class="st">🎒 1 · Arma tu kit inicial</h2>
     <div class="chips" id="kitPre"></div>
+    <div class="chips" id="tierChips"></div>
     <div class="inv" id="inv"></div>
+    <div style="margin-top:14px">
+      <label>🤖 O descríbele tu estilo a la IA<input id="aiKitIn" maxlength="140" placeholder="Ej. guerrero agresivo que explora cuevas"></label>
+      <div class="rowbtns"><button type="button" class="btn primary" id="aiKitGo">Generar kit con IA ✨</button></div>
+      <small id="aiKitNote" class="muted"></small>
+    </div>
     <pre class="tpl" id="kitOut">Toca items para agregarlos…</pre>
     <div class="rowbtns"><button type="button" class="btn primary" id="kitCopy">Copiar comandos 📋</button><button type="button" class="btn" id="kitClear">Vaciar</button></div>
   </div>
@@ -104,16 +112,48 @@ const store={get:(k,f)=>{try{const v=localStorage.getItem(k);return v?JSON.parse
 const esc=v=>{const d=document.createElement('div');d.textContent=v==null?"":v;return d.innerHTML};
 // ---------- 1. KITS ----------
 const ITEMS=[
- {id:"iron_sword",n:"Espada hierro"},{id:"shield",n:"Escudo"},{id:"bow",n:"Arco"},{id:"arrow",n:"Flechas",q:64},
- {id:"iron_helmet",n:"Casco"},{id:"iron_chestplate",n:"Pechera"},{id:"iron_leggings",n:"Pantalones"},{id:"iron_boots",n:"Botas"},
- {id:"iron_pickaxe",n:"Pico"},{id:"iron_axe",n:"Hacha"},{id:"torch",n:"Antorchas",q:64},{id:"cooked_beef",n:"Comida",q:32},
- {id:"oak_planks",n:"Madera",q:64},{id:"cobblestone",n:"Piedra",q:64},{id:"water_bucket",n:"Agua"},{id:"bed",n:"Cama",c:"red_bed"},
- {id:"ender_pearl",n:"Perlas",q:16},{id:"golden_apple",n:"Manzana dorada"},{id:"fishing_rod",n:"Caña"},{id:"shears",n:"Tijeras"}
+ {id:"iron_sword",n:"Espada hierro",t:["Inicial"]},{id:"shield",n:"Escudo",t:["Inicial","Diamante","Netherite"]},
+ {id:"bow",n:"Arco",t:["Inicial","Diamante","Netherite"]},{id:"arrow",n:"Flechas",q:64,t:["Inicial","Diamante","Netherite"]},
+ {id:"iron_helmet",n:"Casco",t:["Inicial"]},{id:"iron_chestplate",n:"Pechera",t:["Inicial"]},{id:"iron_leggings",n:"Pantalones",t:["Inicial"]},{id:"iron_boots",n:"Botas",t:["Inicial"]},
+ {id:"diamond_sword",n:"Espada diamante",t:["Diamante"]},{id:"diamond_pickaxe",n:"Pico diamante",t:["Diamante"]},{id:"diamond_axe",n:"Hacha diamante",t:["Diamante"]},
+ {id:"diamond_helmet",n:"Casco diam.",t:["Diamante"]},{id:"diamond_chestplate",n:"Pechera diam.",t:["Diamante"]},{id:"diamond_leggings",n:"Pantalones diam.",t:["Diamante"]},{id:"diamond_boots",n:"Botas diam.",t:["Diamante"]},
+ {id:"netherite_sword",n:"Espada netherite",t:["Netherite"]},{id:"netherite_pickaxe",n:"Pico netherite",t:["Netherite"]},{id:"netherite_axe",n:"Hacha netherite",t:["Netherite"]},
+ {id:"netherite_helmet",n:"Casco netherite",t:["Netherite"]},{id:"netherite_chestplate",n:"Pechera netherite",t:["Netherite"]},{id:"netherite_leggings",n:"Pantalones netherite",t:["Netherite"]},{id:"netherite_boots",n:"Botas netherite",t:["Netherite"]},
+ {id:"totem_of_undying",n:"Tótem",t:["Netherite"]},{id:"elytra",n:"Élitros",t:["Netherite"]},{id:"shulker_box",n:"Shulker",t:["Netherite"]},
+ {id:"iron_pickaxe",n:"Pico",t:["Inicial"]},{id:"iron_axe",n:"Hacha",t:["Inicial"]},
+ {id:"torch",n:"Antorchas",q:64,t:["Inicial","Diamante","Netherite"]},{id:"cooked_beef",n:"Comida",q:32,t:["Inicial","Diamante"]},
+ {id:"golden_carrot",n:"Zanahoria dorada",q:32,t:["Netherite"]},{id:"oak_planks",n:"Madera",q:64,t:["Inicial","Diamante"]},
+ {id:"cobblestone",n:"Piedra",q:64,t:["Inicial"]},{id:"dirt",n:"Tierra",q:64,t:["Inicial"]},{id:"glass",n:"Cristal",q:32,t:["Inicial"]},
+ {id:"ladder",n:"Escaleras",q:32,t:["Inicial"]},{id:"crafting_table",n:"Mesa",t:["Inicial"]},{id:"furnace",n:"Horno",t:["Inicial"]},
+ {id:"water_bucket",n:"Agua",t:["Inicial","Diamante","Netherite"]},{id:"bed",n:"Cama",c:"red_bed",t:["Inicial","Diamante","Netherite"]},
+ {id:"ender_pearl",n:"Perlas",q:16,t:["Inicial","Diamante","Netherite"]},{id:"golden_apple",n:"Manzana dorada",t:["Inicial","Diamante"]},
+ {id:"fishing_rod",n:"Caña",t:["Inicial","Diamante"]},{id:"shears",n:"Tijeras",t:["Inicial"]},{id:"bread",n:"Pan",q:32,t:["Inicial"]},{id:"apple",n:"Manzanas",q:16,t:["Inicial"]}
 ];
-const PRESETS={"Guerrero":["iron_sword","shield","iron_chestplate","cooked_beef","torch"],"Minero":["iron_pickaxe","torch","oak_planks","cooked_beef","water_bucket"],"Arquero":["bow","arrow","cooked_beef","bed"],"Nómada":["bed","cooked_beef","torch","oak_planks","fishing_rod"]};
+const VALID={};
+ITEMS.forEach((it,i)=>{VALID[it.id]=i;if(it.c)VALID[it.c]=i});
+const PRESETS={
+ Guerrero:{t:"Inicial",items:["iron_sword","shield","iron_chestplate","cooked_beef","torch"]},
+ Minero:{t:"Inicial",items:["iron_pickaxe","torch","oak_planks","cooked_beef","water_bucket"]},
+ Arquero:{t:"Inicial",items:["bow","arrow","cooked_beef","bed"]},
+ "Nómada":{t:"Inicial",items:["bed","cooked_beef","torch","oak_planks","fishing_rod"]},
+ "Full Diamante":{t:"Diamante",items:["diamond_sword","diamond_pickaxe","diamond_helmet","diamond_chestplate","diamond_leggings","diamond_boots","shield","cooked_beef"]},
+ "PvP Diamante":{t:"Diamante",items:["diamond_sword","diamond_chestplate","diamond_leggings","shield","golden_apple","ender_pearl","bow","arrow"]},
+ "Full Netherite":{t:"Netherite",items:["netherite_sword","netherite_pickaxe","netherite_helmet","netherite_chestplate","netherite_leggings","netherite_boots","shield","totem_of_undying"]},
+ "Explorador End":{t:"Netherite",items:["netherite_pickaxe","elytra","shulker_box","ender_pearl","golden_carrot","water_bucket","torch","bed"]}
+};
+const TIERS=["Todo","Inicial","Diamante","Netherite"];
+let tierF="Todo";
 let kit={};
+function paintTiers(){
+  document.getElementById('tierChips').innerHTML=TIERS.map(t=>`<button class="chip${t===tierF?" active":""}" data-tier="${t}">${t}</button>`).join('');
+}
+document.getElementById('tierChips').addEventListener('click',e=>{
+  const b=e.target.closest?e.target.closest('[data-tier]'):null;
+  if(!b)return;tierF=b.dataset.tier;paintTiers();paintInv();
+});
 function paintInv(){
-  document.getElementById('inv').innerHTML=ITEMS.map((it,i)=>`<div class="slot${kit[i]?' on':''}" data-it="${i}"><b>${esc(it.n)}</b><small>minecraft:${esc(it.c||it.id)}</small><span class="qty">${kit[i]?("x"+kit[i]):"+"}</span></div>`).join('');
+  const vis=ITEMS.map((it,i)=>({it,i})).filter(x=>tierF==="Todo"||x.it.t.includes(tierF));
+  document.getElementById('inv').innerHTML=vis.map(x=>`<div class="slot${kit[x.i]?' on':''}" data-it="${x.i}"><b>${esc(x.it.n)}</b><small>minecraft:${esc(x.it.c||x.it.id)}</small><span class="qty">${kit[x.i]?("x"+kit[x.i]):"+"}</span></div>`).join('')||'<p class="muted">Sin items en este tier.</p>';
   const lines=Object.keys(kit).map(i=>{const it=ITEMS[i];return `/give @p minecraft:${it.c||it.id} ${kit[i]}`});
   document.getElementById('kitOut').textContent=lines.length?lines.join("\n"):"Toca items para agregarlos…";
 }
@@ -132,18 +172,48 @@ document.getElementById('inv').addEventListener('contextmenu',e=>{
 });
 document.querySelectorAll('[data-pre]').forEach(b=>b.addEventListener('click',()=>{
   kit={};
-  PRESETS[b.dataset.pre].forEach(id=>{
+  const p=PRESETS[b.dataset.pre];
+  tierF=p.t;paintTiers();
+  p.items.forEach(id=>{
     const i=ITEMS.findIndex(x=>x.id===id||x.c===id);
     if(i>=0)kit[i]=ITEMS[i].q||1;
   });
   paintInv();
 }));
 document.getElementById('kitClear').addEventListener('click',()=>{kit={};paintInv()});
+function aiExtract(r){if(!r)return"";if(typeof r==="string")return r;const m=r.message&&r.message.content;if(typeof m==="string")return m;if(Array.isArray(m))return m.map(p=>typeof p==="string"?p:(p.text||"")).join("");return r.text||r.output||""}
+async function aiChat(prompt){
+  try{if(window.puter&&puter.ai&&puter.ai.chat){const t=aiExtract(await puter.ai.chat(prompt));if(t&&t.trim())return{text:t.trim(),via:"Puter.js"}}}catch(e){console.warn(e)}
+  const res=await fetch("https://text.pollinations.ai/"+encodeURIComponent(prompt));
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const t=(await res.text()).trim();if(!t)throw new Error("vacío");
+  return{text:t,via:"Pollinations"};
+}
+document.getElementById('aiKitGo').addEventListener('click',()=>{
+  const q=document.getElementById('aiKitIn').value.trim();
+  const note=document.getElementById('aiKitNote');
+  if(q.length<4){note.textContent="Describe tu estilo en unas palabras. ✍️";return}
+  note.textContent="Generando kit… ⏳";
+  aiChat(`Eres un experto en Minecraft. El usuario quiere un kit y dice: "${q}". Responde SOLO con líneas formato minecraft:id xN (una por línea, máximo 8 líneas), usando solo items vanilla comunes (armas, armadura, comida, bloques, herramientas, pociones simples). Sin explicaciones ni texto extra.`).then(r=>{
+    let n=0;
+    const re=/minecraft:([a-z_]+)(?:\s*x?(\d+))?/gi;
+    let m;
+    while((m=re.exec(r.text))&&n<8){
+      const id=m[1];
+      if(!(id in VALID))continue;
+      const it=ITEMS[VALID[id]];
+      kit[VALID[id]]=Math.min(64,Math.max(1,Number(m[2])||it.q||1));
+      n++;
+    }
+    tierF="Todo";paintTiers();paintInv();
+    note.textContent=n?`Kit generado con IA: ${n} items. ✅ Tócalos para ajustar cantidades.`:"La IA no devolvió items válidos. Intenta de nuevo. ⚠️";
+  }).catch(()=>{note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
+});
 document.getElementById('kitCopy').addEventListener('click',async()=>{
   const t=document.getElementById('kitOut').textContent;
   try{await navigator.clipboard.writeText(t);alert('¡Kit copiado! 📋')}catch(e){alert('No se pudo copiar.')}
 });
-paintInv();
+paintTiers();paintInv();
 // ---------- 2. FIRMA ----------
 function paintSig(){
   const c=document.getElementById('sigCanvas'),x=c.getContext('2d');
