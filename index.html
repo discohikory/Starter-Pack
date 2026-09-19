@@ -77,7 +77,7 @@ footer strong{color:#fff}
     <div class="inv" id="inv"></div>
     <div style="margin-top:14px">
       <label>🤖 O descríbele tu estilo a la IA<input id="aiKitIn" maxlength="140" placeholder="Ej. guerrero agresivo que explora cuevas"></label>
-      <div class="rowbtns"><button type="button" class="btn primary" id="aiKitGo">Generar kit con IA ✨</button></div>
+      <div class="rowbtns"><button type="button" class="btn primary" id="aiKitGo">Generar kit con IA ✨</button><button type="button" class="btn" id="aiKitRe">🔄 Reintentar</button></div>
       <small id="aiKitNote" class="muted"></small>
     </div>
     <pre class="tpl" id="kitOut">Toca items para agregarlos…</pre>
@@ -200,24 +200,38 @@ async function aiChat(prompt){
   const t=(await res.text()).trim();if(!t)throw new Error("vacío");
   return{text:t,via:"Pollinations"};
 }
+function detectTier(q){
+  const s=q.toLowerCase();
+  if(/netherite|nether|\bend\b|elytra|shulker|totem/.test(s))return"Netherite";
+  if(/diamante|diamond|avanzado|pvp|pelea|guerra|pro\b/.test(s))return"Diamante";
+  if(/hierro|iron|inicial|empez|nuevo|novato|casa|base|granja/.test(s))return"Inicial";
+  return"Mixto";
+}
+document.getElementById('aiKitRe').addEventListener('click',()=>document.getElementById('aiKitGo').click());
 document.getElementById('aiKitGo').addEventListener('click',()=>{
   const q=document.getElementById('aiKitIn').value.trim();
   const note=document.getElementById('aiKitNote');
   if(q.length<4){note.textContent="Describe tu estilo en unas palabras. ✍️";return}
   note.textContent="Generando kit… ⏳";
-  aiChat(`Eres un experto en Minecraft. El usuario quiere un kit y dice: "${q}". Responde SOLO con líneas formato minecraft:id xN (una por línea, máximo 8 líneas), usando solo items vanilla comunes (armas, armadura, comida, bloques, herramientas, pociones simples). Sin explicaciones ni texto extra.`).then(r=>{
+  const tier=detectTier(q);
+  aiChat(`Eres diseñador de kits de Minecraft Java para servidores survival. El usuario pide: "${q}". Nivel: ${tier}. REGLAS: responde con un bloque KIT: de máximo 8 líneas formato minecraft:id xN (cantidades sensatas: armadura y herramientas x1, comida y bloques en stacks, perlas max 16), prefiriendo items de nivel ${tier}; luego un bloque NOTA: con 2 líneas: para qué sirve el kit + 1 idea de nombre y lore personalizado para su editor de items. Nada fuera de esos dos bloques.`).then(r=>{
+    const km=r.text.match(/KIT:([\s\S]*?)(NOTA:|$)/i);
+    const src=km?km[1]:r.text;
     let n=0;
     const re=/minecraft:([a-z_]+)(?:\s*x?(\d+))?/gi;
     let m;
-    while((m=re.exec(r.text))&&n<8){
+    kit={};
+    while((m=re.exec(src))&&n<8){
       const id=m[1];
       if(!(id in VALID))continue;
       const it=ITEMS[VALID[id]];
       kit[VALID[id]]=Math.min(64,Math.max(1,Number(m[2])||it.q||1));
       n++;
     }
-    tierF="Todo";paintTiers();paintInv();
-    note.textContent=n?`Kit generado con IA: ${n} items. ✅ Tócalos para ajustar cantidades.`:"La IA no devolvió items válidos. Intenta de nuevo. ⚠️";
+    const nm=r.text.match(/NOTA:([\s\S]*)/i);
+    const nota=nm?nm[1].trim().slice(0,180):"";
+    tierF=(tier==="Mixto")?"Todo":tier;paintTiers();paintInv();
+    note.textContent=n?`Kit ${tier} con ${n} items ✅${nota?" — "+nota:""}`:"La IA no devolvió items válidos. Pulsa reintentar. ⚠️";
   }).catch(()=>{note.textContent="La IA no responde ahora. Intenta luego. ⚠️"});
 });
 document.getElementById('kitCopy').addEventListener('click',async()=>{
